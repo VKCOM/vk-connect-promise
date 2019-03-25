@@ -5,12 +5,11 @@
   </a>
   <br>
   <br>
-  [![npm][npm]][npm-url]
 
+  [![npm][npm]][npm-url]
   [![node][node]][node-url]
   [![deps][deps]][deps-url]
-  [![tests][tests]][tests-url]
-  [![builds][builds]][builds-url]
+
 </div>
 
 
@@ -36,3 +35,12 @@ connect.send('VKWebAppInit', {})
   .then(data => handleResponse(data))
   .catch(error => handleError(error));
 ```
+
+[npm]: https://img.shields.io/npm/v/@vkontakte/vkui-connect-promise.svg
+[npm-url]: https://npmjs.com/package/@vkontakte/vkui-connect-promise
+
+[node]: https://img.shields.io/node/v/vkcom/vkui-connect-promise.svg
+[node-url]: https://nodejs.org
+
+[deps]: https://img.shields.io/david/vkcom/vkui-connect-promise.svg
+[deps-url]: https://david-dm.org/vkcom/vkui-connect-promise
