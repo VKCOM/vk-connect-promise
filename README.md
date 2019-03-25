@@ -2,9 +2,14 @@
 
 Пакет для интеграции VK Apps-приложений с официальными клиентами VK для iOS, Android и Web с шиной событий на промисах.
 
+Подробнее о промисах можно почитать тут:
+- https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise 🇬🇧/🇷🇺
+- http://learn.javascript.ru/promise 🇷🇺
+
+
 ## Подключение
 ```js
-import connect from '@vkontakte/vkui-connect';
+import connect from '@vkontakte/vkui-connect-promise';
 ```
 
 ## Пример использования
