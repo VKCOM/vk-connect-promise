@@ -39,7 +39,7 @@ connect.send('VKWebAppInit', {})
 [npm]: https://img.shields.io/npm/v/@vkontakte/vkui-connect-promise.svg
 [npm-url]: https://npmjs.com/package/@vkontakte/vkui-connect-promise
 
-[node]: https://img.shields.io/node/v/vkcom/vkui-connect-promise.svg
+[node]: https://img.shields.io/node/v/@vkontakte/vkui-connect-promise.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/david/vkcom/vkui-connect-promise.svg

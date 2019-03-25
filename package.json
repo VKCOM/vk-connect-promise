@@ -1,6 +1,6 @@
 {
   "name": "@vkontakte/vkui-connect-promise",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Пакет для интеграции VK Apps-приложений с официальными клиентами VK для iOS, Android и Web с шиной событий на промисах.",
   "main": "build/vk-connect-promise.js",
   "module": "build/vk-connect-promise.es.js",
