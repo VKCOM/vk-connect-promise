@@ -37,35 +37,17 @@ if (!window.CustomEvent) {
   })();
 }
 
-/* global window, parent */
-
-/* eslint no-restricted-globals: ["off", "parent"] */
+var DESKTOP_EVENTS = ['VKWebAppGetAuthToken', 'VKWebAppCallAPIMethod', 'VKWebAppAddToCommunity', 'VKWebAppGetGeodata', 'VKWebAppGetUserInfo', 'VKWebAppGetPhoneNumber', 'VKWebAppGetClientVersion', 'VKWebAppGetCommunityAuthToken', 'VKWebAppOpenPayForm', 'VKWebAppShare', 'VKWebAppAllowNotifications', 'VKWebAppDenyNotifications', 'VKWebAppShowWallPostBox', 'VKWebAppGetEmail', 'VKWebAppAllowMessagesFromGroup', 'VKWebAppJoinGroup', 'VKWebAppOpenApp', 'VKWebAppSetViewSettings', 'VKWebAppSetLocation', 'VKWebAppScroll', 'VKWebAppResizeWindow'];
 
 var FUNCTION = 'function';
 var UNDEFINED = 'undefined';
-var EVENT_PREFIX = 'VKWebApp';
 var isClient = typeof window !== UNDEFINED;
 var androidBridge = isClient && window.AndroidBridge;
 var iosBridge = isClient && window.webkit && window.webkit.messageHandlers;
 var isWeb = !androidBridge && !iosBridge;
 var eventType = isWeb ? 'message' : 'VKWebAppEvent';
 var promises = {};
-var desktopEvents = [];
 var method_counter = 0;
-
-function getUrlParams(search) {
-  var hashes = search.slice(search.indexOf('?') + 1).split('&');
-  var params = {};
-  hashes.map(function (hash) {
-    var _hash$split = hash.split('='),
-        key = _hash$split[0],
-        val = _hash$split[1];
-
-    params[key] = decodeURIComponent(val);
-  });
-  return params;
-}
-
 window.addEventListener(eventType, function (event) {
   var promise = null;
   var response = {};
@@ -74,10 +56,6 @@ window.addEventListener(eventType, function (event) {
     if (event.data && event.data.data) {
       response = _extends({}, event.data);
       promise = promises[response.data.request_id];
-
-      if (response.type === 'VkWebAppInitResult' && response.data['events_list']) {
-        desktopEvents = [].concat(response.data['events_list']);
-      }
     }
   } else if (event.detail && event.detail.data) {
     response = _extends({}, event.detail);
@@ -101,14 +79,6 @@ window.addEventListener(eventType, function (event) {
   }
 });
 var index = (function () {
-  var urlParams = getUrlParams(window.location.href);
-
-  if (urlParams['vk_events']) {
-    desktopEvents = urlParams['vk_events'].split(',').map(function (event) {
-      return EVENT_PREFIX + event;
-    });
-  }
-
   return {
     /**
      * Sends a message to native client
@@ -159,7 +129,7 @@ var index = (function () {
     supports: function supports(handler) {
       if (androidBridge && typeof androidBridge[handler] === FUNCTION) return true;
       if (iosBridge && iosBridge[handler] && typeof iosBridge[handler].postMessage === FUNCTION) return true;
-      if (~desktopEvents.indexOf(handler)) return true;
+      if (~DESKTOP_EVENTS.indexOf(handler)) return true;
       return false;
     }
   };
