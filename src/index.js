@@ -12,11 +12,18 @@ const iosBridge = isClient && window.webkit && window.webkit.messageHandlers;
 const isWeb = !androidBridge && !iosBridge;
 const eventType = isWeb ? 'message' : 'VKWebAppEvent';
 const promises = {};
-let method_counter = 0;
+let methodCounter = 0;
+let webFrameId = '';
+let subscribers = [];
 
 window.addEventListener(eventType, (event) => {
   let promise = null;
   let response = {};
+
+  if (subscribers.length > 0) {
+    subscribeHandler(event);
+  }
+
   if (isWeb) {
     if (event.data && event.data.data) {
       response = { ...event.data };
@@ -42,6 +49,33 @@ window.addEventListener(eventType, (event) => {
   }
 });
 
+const subscribeHandler = (event) => {
+  const _subscribers = subscribers.slice();
+  if (isWeb) {
+    if (event.data.hasOwnProperty('webFrameId')) {
+      delete event.data.webFrameId;
+    }
+    if (event.data.hasOwnProperty('connectVersion')) {
+      delete event.data.connectVersion;
+    }
+    if (event.data.type && event.data.type === 'VKWebAppSettings') {
+      webFrameId = event.data.frameId;
+    } else {
+      _subscribers.forEach((fn) => {
+        fn({
+          detail: { ...event.data },
+        });
+      });
+    }
+  } else if (event.detail && event.detail.data) {
+    _subscribers.forEach((fn) => {
+      fn.apply(null, {
+        detail: { ...event.detail },
+      });
+    });
+  }
+};
+
 export default (() => {
   return {
     /**
@@ -56,7 +90,7 @@ export default (() => {
       if (!params) {
         params = {};
       }
-      const id = params['request_id'] ? params['request_id'] : `method#${method_counter++}`;
+      const id = params['request_id'] ? params['request_id'] : `method#${methodCounter++}`;
       let customRequestId = false;
       if (!params.hasOwnProperty('request_id')) {
         customRequestId = true;
@@ -95,6 +129,9 @@ export default (() => {
       if (~DESKTOP_EVENTS.indexOf(handler)) return true;
 
       return false;
+    },
+    subscribe: (fn) => {
+      subscribers.push(fn);
     },
   };
 })();

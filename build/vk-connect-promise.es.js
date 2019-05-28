@@ -45,10 +45,16 @@ var iosBridge = isClient && window.webkit && window.webkit.messageHandlers;
 var isWeb = !androidBridge && !iosBridge;
 var eventType = isWeb ? 'message' : 'VKWebAppEvent';
 var promises = {};
-var method_counter = 0;
+var methodCounter = 0;
+var webFrameId = '';
+var subscribers = [];
 window.addEventListener(eventType, function (event) {
   var promise = null;
   var response = {};
+
+  if (subscribers.length > 0) {
+    subscribeHandler(event);
+  }
 
   if (isWeb) {
     if (event.data && event.data.data) {
@@ -76,6 +82,37 @@ window.addEventListener(eventType, function (event) {
     }
   }
 });
+
+var subscribeHandler = function subscribeHandler(event) {
+  var _subscribers = subscribers.slice();
+
+  if (isWeb) {
+    if (event.data.hasOwnProperty('webFrameId')) {
+      delete event.data.webFrameId;
+    }
+
+    if (event.data.hasOwnProperty('connectVersion')) {
+      delete event.data.connectVersion;
+    }
+
+    if (event.data.type && event.data.type === 'VKWebAppSettings') {
+      webFrameId = event.data.frameId;
+    } else {
+      _subscribers.forEach(function (fn) {
+        fn({
+          detail: _extends({}, event.data)
+        });
+      });
+    }
+  } else if (event.detail && event.detail.data) {
+    _subscribers.forEach(function (fn) {
+      fn.apply(null, {
+        detail: _extends({}, event.detail)
+      });
+    });
+  }
+};
+
 var index = (function () {
   return {
     /**
@@ -91,7 +128,7 @@ var index = (function () {
         params = {};
       }
 
-      var id = params['request_id'] ? params['request_id'] : "method#" + method_counter++;
+      var id = params['request_id'] ? params['request_id'] : "method#" + methodCounter++;
       var customRequestId = false;
 
       if (!params.hasOwnProperty('request_id')) {
@@ -129,6 +166,9 @@ var index = (function () {
       if (iosBridge && iosBridge[handler] && typeof iosBridge[handler].postMessage === FUNCTION) return true;
       if (~DESKTOP_EVENTS.indexOf(handler)) return true;
       return false;
+    },
+    subscribe: function subscribe(fn) {
+      subscribers.push(fn);
     }
   };
 })();
