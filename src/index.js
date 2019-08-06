@@ -1,20 +1,21 @@
 /* global window, parent */
 /* eslint no-restricted-globals: ["off", "parent"] */
-import '@babel/polyfill';
+import 'core-js/features/promise';
 import './custom-event-polyfill';
 import DESKTOP_EVENTS from './desktop-events';
 
 const FUNCTION = 'function';
 const UNDEFINED = 'undefined';
 const isClient = typeof window !== UNDEFINED;
+const isChrome = navigator && ~navigator.userAgent.indexOf('CriOS');
 const androidBridge = isClient && window.AndroidBridge;
-const iosBridge = isClient && window.webkit && window.webkit.messageHandlers;
+const iosBridge = isChrome ? false : isClient && window.webkit && window.webkit.messageHandlers;
 const isWeb = !androidBridge && !iosBridge;
 const eventType = isWeb ? 'message' : 'VKWebAppEvent';
 const promises = {};
 let methodCounter = 0;
 let frameId = '';
-let subscribers = [];
+const subscribers = [];
 
 window.addEventListener(eventType, (event) => {
   let promise = null;
@@ -64,7 +65,7 @@ window.addEventListener(eventType, (event) => {
 
 const subscribeHandler = (event) => {
   const _subscribers = subscribers.slice();
-  let data = {};
+  const data = {};
   if (isWeb) {
     data.detail = { ...event.data };
   } else if (event.detail && event.detail.data) {

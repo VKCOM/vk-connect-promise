@@ -2,6 +2,8 @@ import { babelSetup } from '../configs/config';
 import babel from 'rollup-plugin-babel';
 import replace from 'rollup-plugin-replace';
 import { uglify } from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
+import bundleSize from 'rollup-plugin-bundle-size';
 import resolve from 'rollup-plugin-node-resolve';
 import commonJS from 'rollup-plugin-commonjs';
 import pkg from '../package.json';
@@ -32,15 +34,17 @@ const createConfig = ({ output, env } = {}) => {
 
   return {
     input: 'src/index.js',
-    external: ['@babel/polyfill'],
+    external: ['core-js/features/promise'],
     plugins: [
       babel(babelSetup),
       resolve(),
+      terser(),
       commonJS(),
       env && replace({
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
       min && uglify(uglifyOutput),
+      bundleSize(),
     ].filter(Boolean),
     output: cusomIsArray(output).map((format) =>
       Object.assign(
