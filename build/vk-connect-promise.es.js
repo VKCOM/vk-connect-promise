@@ -46,11 +46,26 @@ var isWeb = !androidBridge && !iosBridge;
 var eventType = isWeb ? 'message' : 'VKWebAppEvent';
 var promises = {};
 var methodCounter = 0;
-var webFrameId = '';
+var frameId = '';
 var subscribers = [];
 window.addEventListener(eventType, function (event) {
   var promise = null;
   var response = {};
+
+  if (isWeb) {
+    if (event.data.type && event.data.type === 'VKWebAppSettings') {
+      frameId = event.data.frameId;
+      return;
+    }
+
+    if (event.data.hasOwnProperty('frameId')) {
+      delete event.data.frameId;
+    }
+
+    if (event.data.hasOwnProperty('connectVersion')) {
+      delete event.data.connectVersion;
+    }
+  }
 
   if (subscribers.length > 0) {
     subscribeHandler(event);
@@ -86,31 +101,17 @@ window.addEventListener(eventType, function (event) {
 var subscribeHandler = function subscribeHandler(event) {
   var _subscribers = subscribers.slice();
 
+  var data = {};
+
   if (isWeb) {
-    if (event.data.hasOwnProperty('webFrameId')) {
-      delete event.data.webFrameId;
-    }
-
-    if (event.data.hasOwnProperty('connectVersion')) {
-      delete event.data.connectVersion;
-    }
-
-    if (event.data.type && event.data.type === 'VKWebAppSettings') {
-      webFrameId = event.data.frameId;
-    } else {
-      _subscribers.forEach(function (fn) {
-        fn({
-          detail: _extends({}, event.data)
-        });
-      });
-    }
+    data.detail = _extends({}, event.data);
   } else if (event.detail && event.detail.data) {
-    _subscribers.forEach(function (fn) {
-      fn.apply(null, {
-        detail: _extends({}, event.detail)
-      });
-    });
+    data.detail = _extends({}, event.detail);
   }
+
+  _subscribers.forEach(function (fn) {
+    fn(data);
+  });
 };
 
 var index = (function () {
@@ -148,18 +149,21 @@ var index = (function () {
         parent.postMessage({
           handler: handler,
           params: params,
+          frameId: frameId,
           type: 'vk-connect'
         }, '*');
       }
 
-      return new Promise(function (resolve, reject) {
-        promises[id] = {
-          resolve: resolve,
-          reject: reject,
-          params: params,
-          customRequestId: customRequestId
-        };
-      });
+      if (handler !== 'VKWebAppInit') {
+        return new Promise(function (resolve, reject) {
+          promises[id] = {
+            resolve: resolve,
+            reject: reject,
+            params: params,
+            customRequestId: customRequestId
+          };
+        });
+      }
     },
     supports: function supports(handler) {
       if (androidBridge && typeof androidBridge[handler] === FUNCTION) return true;
