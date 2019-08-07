@@ -34,7 +34,6 @@ const createConfig = ({ output, env } = {}) => {
 
   return {
     input: 'src/index.js',
-    external: ['core-js/features/promise'],
     plugins: [
       babel(babelSetup),
       resolve(),

@@ -1,6 +1,5 @@
 /* global window, parent */
 /* eslint no-restricted-globals: ["off", "parent"] */
-import 'core-js/features/promise';
 import './custom-event-polyfill';
 import DESKTOP_EVENTS from './desktop-events';
 
