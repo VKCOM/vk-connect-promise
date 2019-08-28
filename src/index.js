@@ -6,9 +6,14 @@ import DESKTOP_EVENTS from './desktop-events';
 const FUNCTION = 'function';
 const UNDEFINED = 'undefined';
 const isClient = typeof window !== UNDEFINED;
-const isChrome = navigator && ~navigator.userAgent.indexOf('CriOS');
+const isIOSNativeClient =
+    isClient &&
+    window.webkit &&
+    window.webkit.messageHandlers !== undefined &&
+    window.webkit.messageHandlers.VKWebAppClose !== undefined;
+
 const androidBridge = isClient && window.AndroidBridge;
-const iosBridge = isChrome ? false : isClient && window.webkit && window.webkit.messageHandlers;
+const iosBridge = isIOSNativeClient && window.webkit.messageHandlers;
 const isWeb = !androidBridge && !iosBridge;
 const eventType = isWeb ? 'message' : 'VKWebAppEvent';
 const promises = {};
