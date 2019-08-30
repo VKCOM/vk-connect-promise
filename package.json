@@ -44,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/VKCOM/vk-connect-promise.git"
   },
   "keywords": [
     "vk",
