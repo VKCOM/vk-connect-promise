@@ -50,7 +50,7 @@ const createConfig = ({ output, env } = {}) => {
         {},
         format,
         {
-          name: 'VKUI-Connect-Promise',
+          name: 'VK-Connect-Promise',
         }
       )
     ),

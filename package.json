@@ -1,5 +1,5 @@
 {
-  "name": "@vkontakte/vkui-connect-promise",
+  "name": "@vkontakte/vk-connect-promise",
   "version": "0.2.0",
   "description": "Пакет для интеграции VK Apps-приложений с официальными клиентами VK для iOS, Android и Web с шиной событий на промисах.",
   "main": "build/vk-connect-promise.js",
@@ -44,7 +44,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/VKCOM/vk-connect-promise.git"
   },
   "keywords": [
     "vk",
