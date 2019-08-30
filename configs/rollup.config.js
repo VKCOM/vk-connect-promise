@@ -8,7 +8,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonJS from 'rollup-plugin-commonjs';
 import pkg from '../package.json';
 
-const cusomIsArray = (maybeArr) => Array.isArray(maybeArr) ? maybeArr : [maybeArr];
+const cusomIsArray = maybeArr => (Array.isArray(maybeArr) ? maybeArr : [maybeArr]);
 
 const uglifyOutput = {
   output: {
@@ -19,8 +19,8 @@ const uglifyOutput = {
         // multiline comment
         return /@preserve|@license|@cc_on/i.test(text);
       }
-    },
-  },
+    }
+  }
 };
 
 const createConfig = ({ output, env } = {}) => {
@@ -39,29 +39,23 @@ const createConfig = ({ output, env } = {}) => {
       resolve(),
       terser(),
       commonJS(),
-      env && replace({
-        'process.env.NODE_ENV': JSON.stringify(env),
-      }),
+      env &&
+        replace({
+          'process.env.NODE_ENV': JSON.stringify(env)
+        }),
       min && uglify(uglifyOutput),
-      bundleSize(),
+      bundleSize()
     ].filter(Boolean),
-    output: cusomIsArray(output).map((format) =>
-      Object.assign(
-        {},
-        format,
-        {
-          name: 'VKUI-Connect-Promise',
-        }
-      )
-    ),
+    output: cusomIsArray(output).map(format =>
+      Object.assign({}, format, {
+        name: 'VK-Connect-Promise'
+      })
+    )
   };
 };
 
 export default [
   createConfig({
-    output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
-    ],
-  }),
+    output: [{ file: pkg.main, format: 'cjs' }, { file: pkg.module, format: 'es' }]
+  })
 ];
