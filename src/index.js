@@ -21,51 +21,53 @@ let methodCounter = 0;
 let frameId = '';
 const subscribers = [];
 
-window.addEventListener(eventType, (event) => {
-  let promise = null;
-  let response = {};
+if (isClient) {
+  window.addEventListener(eventType, (event) => {
+    let promise = null;
+    let response = {};
 
-  if (isWeb) {
-    if (event.data.type && event.data.type === 'VKWebAppSettings') {
-      frameId = event.data.frameId;
-      return;
+    if (isWeb) {
+      if (event.data.type && event.data.type === 'VKWebAppSettings') {
+        frameId = event.data.frameId;
+        return;
+      }
+      if (event.data.hasOwnProperty('frameId')) {
+        delete event.data.frameId;
+      }
+      if (event.data.hasOwnProperty('connectVersion')) {
+        delete event.data.connectVersion;
+      }
     }
-    if (event.data.hasOwnProperty('frameId')) {
-      delete event.data.frameId;
-    }
-    if (event.data.hasOwnProperty('connectVersion')) {
-      delete event.data.connectVersion;
-    }
-  }
 
-  if (subscribers.length > 0) {
-    subscribeHandler(event);
-  }
+    if (subscribers.length > 0) {
+      subscribeHandler(event);
+    }
 
-  if (isWeb) {
-    if (event.data && event.data.data) {
-      response = { ...event.data };
+    if (isWeb) {
+      if (event.data && event.data.data) {
+        response = { ...event.data };
+        promise = promises[response.data.request_id];
+      }
+    } else if (event.detail && event.detail.data) {
+      response = { ...event.detail };
       promise = promises[response.data.request_id];
     }
-  } else if (event.detail && event.detail.data) {
-    response = { ...event.detail };
-    promise = promises[response.data.request_id];
-  }
 
-  if (response.data && response.data.request_id) {
-    promise = promises[response.data.request_id];
-    if (promise) {
-      if (promise.customRequestId) {
-        delete response.data['request_id'];
-      }
-      if (response.data['error_type']) {
-        return promise.reject(response);
-      } else {
-        return promise.resolve(response);
+    if (response.data && response.data.request_id) {
+      promise = promises[response.data.request_id];
+      if (promise) {
+        if (promise.customRequestId) {
+          delete response.data['request_id'];
+        }
+        if (response.data['error_type']) {
+          return promise.reject(response);
+        } else {
+          return promise.resolve(response);
+        }
       }
     }
-  }
-});
+  });
+}
 
 const subscribeHandler = (event) => {
   const _subscribers = subscribers.slice();
