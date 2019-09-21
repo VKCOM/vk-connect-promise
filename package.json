@@ -1,9 +1,16 @@
 {
   "name": "@vkontakte/vk-connect-promise",
-  "version": "0.2.0",
-  "description": "Пакет для интеграции VK Apps-приложений с официальными клиентами VK для iOS, Android и Web с шиной событий на промисах.",
-  "main": "build/vk-connect-promise.js",
-  "module": "build/vk-connect-promise.es.js",
+  "version": "1.0.0-beta.0",
+  "description": "A package for integrating VK Mini Apps with official VK clients for iOS, Android and Web with events based on promises",
+  "main": "dist/index.js",
+  "browser": "dist/index.umd.js",
+  "umdName": "vkConnectPromise",
+  "type": "dist/types/index.d.ts",
+  "scripts": {
+    "watch": "rollup -c -w",
+    "build": "rimraf dist && NODE_ENV=production rollup -c",
+    "prepublishOnly": "npm run build"
+  },
   "files": [
     "build",
     "src"
@@ -12,35 +19,17 @@
     "node": ">=4.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.51",
-    "@babel/preset-env": "^7.0.0-beta.51",
-    "babel-eslint": "^10.0.1",
-    "core-js": "^3.1.4",
-    "es-check": "^5.0.0",
-    "eslint": "^5.15.1",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-eslint-no-invalid-this-except": "^1.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "rollup": "^1.0.0",
-    "rollup-plugin-babel": "^4.0.0-beta.0",
+    "@babel/core": "^7.6.0",
+    "rimraf": "^3.0.0",
+    "rollup": "^1.21.4",
+    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-commonjs": "^9.2.1",
-    "rollup-plugin-node-resolve": "^4.0.1",
-    "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "rollup-plugin-uglify": "^6.0.0",
-    "uglify-js": "^3.4.1"
-  },
-  "scripts": {
-    "eslint": "node_modules/.bin/eslint . --fix",
-    "eslint:ci": "node_modules/.bin/eslint .",
-    "build": "npm run build:dist",
-    "build:dist": "rollup --config configs/rollup.config.js",
-    "postpublish": "git tag $npm_package_version && git push origin --tags"
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.24.2",
+    "rollup-plugin-uglify": "^6.0.3",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.3"
   },
   "repository": {
     "type": "git",
@@ -49,13 +38,13 @@
   "keywords": [
     "vk",
     "vk-connect",
+    "vk-connect-promise",
     "vkui-connect",
     "promise"
   ],
   "author": "Gleb Vorontsov <vorontsov.gleb@gmail.com>",
   "license": "MIT",
-  "browserslist": [
-    "defaults",
-    "ie >= 11"
-  ]
+  "dependencies": {
+    "@vkontakte/vk-connect": "1.5.6-beta.13-promise"
+  }
 }
