@@ -21,15 +21,15 @@ A package for integrating VK Mini Apps with official VK clients for iOS, Android
 
 ## ⛔️ DEPRECATED
 
-The package is deprecated in favor of the `sendPromise` method in [VK Connect](https://github.com/vkcom/vk-connect)
+The package has been deprecated in favor of the `sendPromise` method in [VK Connect](https://github.com/vkcom/vk-connect)
 
 ## Usage
 
 ```js
-import connectPromise from '@vkontakte/vk-connect-promise';
+import vkConnectPromise from '@vkontakte/vk-connect-promise';
 
 // Sends event to client
-connect
+vkConnectPromise
   .send('VKWebAppGetEmail')
   .then(data => {
     // Handling received data
