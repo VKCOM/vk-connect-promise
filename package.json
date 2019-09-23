@@ -1,6 +1,6 @@
 {
   "name": "@vkontakte/vk-connect-promise",
-  "version": "1.0.0-beta.5",
+  "version": "1.1.0",
   "description": "A package for integrating VK Mini Apps with official VK clients for iOS, Android and Web with events based on promises",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
